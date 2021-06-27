@@ -23,11 +23,20 @@ props = getConfigProperties(CONFIG_FILENAME)
 
 for prop in props:
     slots, count = findAvailability(prop)
-    mailBody = generateMailBody(slots, count, 1)
-    subject = ""
-    if count > 0:
-        subject = "Slots available!"
+
+    if slots == None:
+        subject = "Invalid state/district configured"
+        mailBody = """Invalid state/district configured. Please update the state/district
+        State: {}
+        District: {}
+        """.format(prop["state"], prop["district"])
+
     else:
-        subject = "Sorry, no slots available right now"
+        mailBody = generateMailBody(slots, count, 1)
+        subject = ""
+        if count > 0:
+            subject = "Slots available!"
+        else:
+            subject = "Sorry, no slots available right now"
 
     sendEmail(prop["email_id"], subject, mailBody)

@@ -21,7 +21,8 @@ def getConfigProperties(filename):
             or "email_id" not in item):
             print("Invalid configuration")
         else:
-            prop_dict["district_id"] = int(item["district_id"])
+            prop_dict["state"] = item["state"]
+            prop_dict["district"] = item["district"]
             prop_dict["email_id"] = item["email_id"]
             prop_dict["vaccine_type"] = item["vaccine_type"] if "vaccine_type" in item else "Any"
             prop_dict["fee_type"] = item["fee_type"] if "fee_type" in item else "Any"

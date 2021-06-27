@@ -11,18 +11,6 @@
                 "400067",
                 "400074"
             ]
-        },
-        {
-            "district_id": 395,
-            "email_id":  "vignesh2997@gmail.com",
-            "vaccine_type": "Paid",
-            "min_age": "18",
-            "vaccine": "COVISHIELD",
-            "dose_number": 2,
-            "pincodes": [
-                "400067",
-                "400074"
-            ]
         }
     ]
 }

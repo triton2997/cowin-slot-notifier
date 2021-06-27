@@ -7,20 +7,20 @@ def generateMailBody(slots, count, doseNumber):
     <html>
         <head>
             <style>
-                table {{
+                table {
                     border: 2px solid black;
                     border-collapse: collapse;
-                }}
-                th {{
+                }
+                th {
                     text-align: center;
                     background-color: blue;
                     color: white;
                     border: 2px solid black
-                }}
-                td {{
+                }
+                td {
                     text-align: center;
                     border: 2px solid black
-                }}
+                }
             </style>
         </head>
     <body>

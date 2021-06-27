@@ -1,0 +1,18 @@
+{
+    "configs": [
+        {
+            "state": "state name (refer to readme for spelling) - mandatory",
+            "district": "district name (refer to readme for spelling) - mandatory",
+            "email_id":  "examplemail@gmail.com - mandatory",
+            "vaccine_type": "Free/Paid/Any",
+            "min_age": "18/45",
+            "vaccine": "COVISHIELD/COVAXIN",
+            "dose_number": "0(Any)/1/2",
+            "pincodes": [
+                "pincode 1",
+                "pincode 2",
+                "pincode 3 and so on"
+            ]
+        }
+    ]
+}
