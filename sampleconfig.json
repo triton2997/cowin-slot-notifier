@@ -1,6 +1,7 @@
 {
     "configs": [
         {
+            "label": "A short label description for future reference - mandatory",
             "state": "state name (refer to readme for spelling) - mandatory",
             "district": "district name (refer to readme for spelling) - mandatory",
             "email_id":  "examplemail@gmail.com - mandatory",

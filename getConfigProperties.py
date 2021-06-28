@@ -18,9 +18,11 @@ def getConfigProperties(filename):
     for item in data['configs']:
         prop_dict = {}
         if ("district_id" not in item 
-            or "email_id" not in item):
+            or "email_id" not in item
+            or "label" not in item):
             print("Invalid configuration")
         else:
+            prop_dict["label"] = item["label"]
             prop_dict["state"] = item["state"]
             prop_dict["district"] = item["district"]
             prop_dict["email_id"] = item["email_id"]

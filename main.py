@@ -25,7 +25,7 @@ for prop in props:
     slots, count = findAvailability(prop)
 
     if slots == None:
-        subject = "Invalid state/district configured"
+        subject = "Invalid state/district configured for label - {}".format(prop["label"])
         mailBody = """Invalid state/district configured. Please update the state/district
         State: {}
         District: {}
@@ -35,7 +35,7 @@ for prop in props:
         mailBody = generateMailBody(slots, count, 1)
         subject = ""
         if count > 0:
-            subject = "Slots available!"
+            subject = "Slots available for label - {}!".format(prop["label"])
         else:
             subject = "Sorry, no slots available right now"
 

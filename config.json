@@ -1,6 +1,7 @@
 {
     "configs": [
         {
+            "label": "Vignesh 1st dose",
             "district_id": 395,
             "email_id":  "vignesh2997@gmail.com",
             "vaccine_type": "Free",
