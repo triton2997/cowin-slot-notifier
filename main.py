@@ -13,9 +13,9 @@
 
 
 from cowinSlotsFinder import findAvailability
-from generateMailBody import generateMailBody
+from mailBodyGenerator import generateMailBody
 from mailSender import sendEmail
-from getConfigProperties import getConfigProperties
+from configPropertiesReader import getConfigProperties
 
 CONFIG_FILENAME = 'config.xml'
 
@@ -24,7 +24,7 @@ props = getConfigProperties(CONFIG_FILENAME)
 for prop in props:
     slots, count = findAvailability(prop)
 
-    if slots == None:
+    if count == -1:
         subject = "Invalid state/district configured for label - {}".format(prop["label"])
         mailBody = """Invalid state/district configured. Please update the state/district
         State: {}

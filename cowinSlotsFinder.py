@@ -42,7 +42,7 @@ def findAvailability(prop):
 
     district_id = getDistrictID(prop["state"], prop["district"])
     if district_id == -1:
-        return None, 0
+        return None, -1
     
     request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}".format(district_id, date.today().strftime("%d-%m-%Y"))
     slots = []
