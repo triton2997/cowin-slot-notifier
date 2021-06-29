@@ -12,12 +12,13 @@ def getConfigProperties(filename):
 
     prop_dicts = []
 
-    with open('config.json',) as f:
+    with open(filename) as f:
         data = json.load(f)
     
     for item in data['configs']:
         prop_dict = {}
-        if ("district_id" not in item 
+        if ("state" not in item 
+            or "district" not in item
             or "email_id" not in item
             or "label" not in item):
             print("Invalid configuration")

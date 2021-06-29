@@ -2,7 +2,8 @@
     "configs": [
         {
             "label": "Vignesh 1st dose",
-            "district_id": 395,
+            "state": "Maharashtra",
+            "district": "Mumbai",
             "email_id":  "vignesh2997@gmail.com",
             "vaccine_type": "Free",
             "min_age": "18",

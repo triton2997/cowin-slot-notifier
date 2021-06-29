@@ -32,7 +32,7 @@ for prop in props:
         """.format(prop["state"], prop["district"])
 
     else:
-        mailBody = generateMailBody(slots, count, 1)
+        mailBody = generateMailBody(slots, count, prop["dose_number"])
         subject = ""
         if count > 0:
             subject = "Slots available for label - {}!".format(prop["label"])

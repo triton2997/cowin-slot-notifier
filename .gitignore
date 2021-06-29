@@ -1,6 +1,7 @@
 
 credentials.json
-config.json
 __pycache__
-config.json
-tests
+testConfigReader.py
+testCowinSlotFinder.py
+testMailBodyGenerator.py
+testMailSender.py

@@ -9,30 +9,30 @@ header = {
 }
 
 # Get district ID
-def getDistrictID(state, district):
+def getDistrictID(state_name, district_name):
     # get list of states
     states_request_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
-    result = requests.get(states_request_URL, header = header)
+    result = requests.get(states_request_URL, headers = header)
     response_json = result.json()
 
     # filter for given state and get state ID
     state_id = 0
     for state in response_json["states"]:
-        if state["state_name"] == state:
+        if state["state_name"] == state_name:
             state_id = state["state_id"]
             break
-    
+
     if state_id == 0:
         return -1
 
     # get list of districts by state ID
     districts_request_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/{}".format(state_id)
-    result = requests.get(districts_request_URL, header = header)
+    result = requests.get(districts_request_URL, headers = header)
     response_json = result.json()
 
     # filter for given district
     for district in response_json["districts"]:
-        if district["district_name"] == district:
+        if district["district_name"] == district_name:
             return district["district_id"]
     
     return -1
