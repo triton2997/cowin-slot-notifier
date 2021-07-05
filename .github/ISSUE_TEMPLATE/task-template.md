@@ -1,11 +1,13 @@
 ---
 name: Task template
 about: Template for creating tasks
-title: "[TASK]"
+title: "[TASK]: "
 labels: Task
 assignees: ''
 
 ---
+
+### Story: 
 
 ### Date:
 

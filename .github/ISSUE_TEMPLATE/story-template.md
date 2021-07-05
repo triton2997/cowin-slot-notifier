@@ -1,11 +1,13 @@
 ---
 name: Story template
 about: Template for creating user stories
-title: "[US]"
+title: "[STORY]: "
 labels: Story
 assignees: ''
 
 ---
+
+### Feature: 
 
 ### Date:
 
