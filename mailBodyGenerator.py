@@ -29,6 +29,7 @@ def generateMailBody(slots, count, doseNumber):
                 <th> Sr No </th>
                 <th> Name </th>
                 <th> Address </th>
+                <th> Pincode </th>
                 <th> Total Capacity </th>
     """
 
@@ -40,7 +41,10 @@ def generateMailBody(slots, count, doseNumber):
     else:
         mailBody += "<th> Dose 2 </th>"
     
-    mailBody += "<th> Timing </th></tr>"
+    mailBody += """
+        <th> Date </th>
+        <th> Timing </th></tr>
+    """
     
     for item in slots:
 
@@ -48,13 +52,16 @@ def generateMailBody(slots, count, doseNumber):
         slot += "<td>{}</td>".format(item[1])
         slot += "<td>{}</td>".format(item[2])
         slot += "<td>{}</td>".format(item[3])
+        slot += "<td>{}</td>".format(item[4])
         if doseNumber == 0:
-            slot += "<td> {} </td>".format(item[4])
             slot += "<td> {} </td>".format(item[5])
             slot += "<td> {} </td>".format(item[6])
+            slot += "<td> {} </td>".format(item[7])
+            slot += "<td> {} </td>".format(item[8])
         else:
-            slot += "<td> {} </td>".format(item[4])
             slot += "<td> {} </td>".format(item[5])
+            slot += "<td> {} </td>".format(item[6])
+            slot += "<td> {} </td>".format(item[7])
         
         slot += "</tr>"
         mailBody += slot

@@ -27,7 +27,6 @@ def getConfigProperties(filename):
             prop_dict["state"] = item["state"]
             prop_dict["district"] = item["district"]
             prop_dict["email_id"] = item["email_id"]
-            prop_dict["vaccine_type"] = item["vaccine_type"] if "vaccine_type" in item else "Any"
             prop_dict["fee_type"] = item["fee_type"] if "fee_type" in item else "Any"
             prop_dict["min_age"] = int(item["min_age"]) if "min_age" in item else 18
             prop_dict["vaccine"] = item["vaccine"] if "vaccine" in item else "Any"

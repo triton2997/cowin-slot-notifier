@@ -1,5 +1,6 @@
 import requests
 from datetime import date
+from datetime import timedelta
 
 # Config details are currently hardcoded
 # Change this to use dictionary object supplied by getConfigProperties
@@ -37,14 +38,9 @@ def getDistrictID(state_name, district_name):
     
     return -1
 
-# Find Availability
-def findAvailability(prop):
-
-    district_id = getDistrictID(prop["state"], prop["district"])
-    if district_id == -1:
-        return None, -1
-    
-    request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}".format(district_id, date.today().strftime("%d-%m-%Y"))
+# Find Availability by date
+def findAvailabilityByDate(prop, district_id, date):
+    request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}".format(district_id, date)
     slots = []
     result = requests.get(request_url, headers=header)
     response_json = result.json()
@@ -58,14 +54,25 @@ def findAvailability(prop):
                 and (len(prop["pincodes"]) == 0 or item["pincode"] in prop["pincodes"]) 
                 and (prop["dose_number"] == 0 or item["available_capacity_dose{}".format(prop["dose_number"])] > 0)):
             count += 1
-            slot = [count, item["name"], item["address"], item["available_capacity"]]
+            slot = [count, item["name"], item["address"], item["pincode"], item["available_capacity"]]
             if prop["dose_number"] in {0,1}:
                 slot.append(item["available_capacity_dose1"])
             
             if prop["dose_number"] in {0,2}:
                 slot.append(item["available_capacity_dose2"])
-
+            slot.append(item["date"])
             slot.append("{} - {}".format(item["from"], item["to"]))
             slots.append(slot)
+    
+    return slots
 
-    return slots, count
+# Find Availability
+def findAvailability(prop):
+
+    district_id = getDistrictID(prop["state"], prop["district"])
+    if district_id == -1:
+        return None, -1
+    
+    slots = findAvailabilityByDate(prop, district_id, date.today().strftime("%d-%m-%Y")) + findAvailabilityByDate(prop, district_id, (date.today() + timedelta(days=1)).strftime("%d-%m-%Y"))
+
+    return slots, len(slots)
