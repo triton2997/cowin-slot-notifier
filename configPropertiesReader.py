@@ -20,9 +20,11 @@ def getConfigProperties(filename):
         if ("state" not in item 
             or "district" not in item
             or "email_id" not in item
-            or "label" not in item):
+            or "label" not in item
+            or "id" not in item):
             print("Invalid configuration")
         else:
+            prop_dict["id"] = item["id"]
             prop_dict["label"] = item["label"]
             prop_dict["state"] = item["state"]
             prop_dict["district"] = item["district"]
