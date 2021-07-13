@@ -63,16 +63,13 @@ while True:
             District: {}
             """.format(prop["state"], prop["district"])
 
-        else:
-            mailBody = generateMailBody(slots, count, prop["dose_number"])
-            subject = ""
-            
-            if count > 0:
+        elif count > 0:
+                mailBody = generateMailBody(slots, prop["dose_number"])
                 subject = "Slots available for label - {}!".format(prop["label"])
                 sendEmail(prop["email_id"], subject, mailBody)
                 done.add(prop["id"])
             
-            print("{} slots found".format(count))
+        print("{} slots found".format(count))
     
     print("Going into wait")
 
