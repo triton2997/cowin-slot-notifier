@@ -1,7 +1,14 @@
-def generateMailBody(slots, count, doseNumber):
+'''
+----------------------------------------------
+Project: CoWIN Slot Notifier
+Module: mailBodyGenerator
+Description:
+    Accepts slots array and dose number as input and returns an
+    HTML table as a string if slots is not empty
+----------------------------------------------
+'''
 
-    if count == 0:
-        return "Sorry, there are no slots available for the parameters currently set"
+def generateMailBody(slots, doseNumber):
 
     mailBody = """
     <html>

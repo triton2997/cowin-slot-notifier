@@ -1,9 +1,16 @@
+'''
+----------------------------------------------
+Project: CoWIN Slot Notifier
+Module: cowinSlotsFinder
+Description:
+    Accepts dictionary object with parameters as input and returns available 
+    slots based on the parameters
+----------------------------------------------
+'''
+
 import requests
 from datetime import date
 from datetime import timedelta
-
-# Config details are currently hardcoded
-# Change this to use dictionary object supplied by getConfigProperties
 
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
@@ -11,6 +18,8 @@ header = {
 
 # Get district ID
 def getDistrictID(state_name, district_name):
+    """Returns district_ID using given state_name and district_name"""
+
     # get list of states
     states_request_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
     result = requests.get(states_request_URL, headers = header)
@@ -40,6 +49,8 @@ def getDistrictID(state_name, district_name):
 
 # Find Availability by date
 def findAvailabilityByDate(prop, district_id, date):
+    """Returns slots filtered by parameters for the given district on a given date"""
+
     request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}".format(district_id, date)
     slots = []
     result = requests.get(request_url, headers=header)
@@ -68,6 +79,7 @@ def findAvailabilityByDate(prop, district_id, date):
 
 # Find Availability
 def findAvailability(prop):
+    """Returns slots for current date and next date"""
 
     district_id = getDistrictID(prop["state"], prop["district"])
     if district_id == -1:

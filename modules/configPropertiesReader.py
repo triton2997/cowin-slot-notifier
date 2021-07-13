@@ -1,18 +1,23 @@
-# Get config details from configurations file
-# Create a dictionary object for each properties item
-# create a list of dictionary object
-# return list of dictionary objects
+'''
+----------------------------------------------
+Project: CoWIN Slot Notifier
+Module: configPropertiesReader
+Description:
+    Reads config parameters from json file and returns a list of dictionaries,
+    each dictionary specifying a set of parameters
+----------------------------------------------
+'''
 
+import os
 import json
 
-
-
 def getConfigProperties(filename):
-    # using JSON
-
     prop_dicts = []
 
-    with open(filename) as f:
+    cur_path = cur_path = os.path.dirname(__file__)
+    new_filename = os.path.join(cur_path, '..', 'files', filename)
+
+    with open(new_filename) as f:
         data = json.load(f)
     
     for item in data['configs']:

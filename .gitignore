@@ -1,8 +1,4 @@
 
 credentials.json
 __pycache__
-testConfigReader.py
-testCowinSlotFinder.py
-testMailBodyGenerator.py
-testMailSender.py
 config.json
