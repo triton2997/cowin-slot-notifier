@@ -31,7 +31,7 @@ from modules.configPropertiesReader import getConfigProperties
 CONFIG_FILENAME = 'config.json'
 
 # Interval for checking
-SLEEP_TIME = 300 # 5 minutes
+SLEEP_TIME = 60
 
 # If slots for a particular label are found, add it to a done list
 done = set()
@@ -43,7 +43,7 @@ RESET_TIME = datetime.combine(datetime.utcnow().date(), time(2,30,0), tzinfo=tim
 while True:
     # Reset done list
     if datetime.now(timezone.utc) > RESET_TIME:
-        done = set()
+        # done = set()
         RESET_TIME += timedelta(days = 1)
 
     print("Check at {}".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
@@ -51,8 +51,8 @@ while True:
     props = getConfigProperties(CONFIG_FILENAME)
 
     for prop in props:
-        if prop["id"] in done:
-            continue
+        # if prop["id"] in done:
+        #     continue
 
         slots, count = findAvailability(prop)
 

@@ -1,0 +1,62 @@
+{
+    "configs": [
+        {
+            "id": "1",
+            "label": "Test 1",
+            "state": "State",
+            "district": "District",
+            "email_id":  "email@example.com",
+            "fee_type": "Free",
+            "min_age": "18",
+            "vaccine": "COVISHIELD",
+            "dose_number": 2,
+            "pincodes": [
+                "1234",
+                "5678"
+            ]
+        },
+        {
+            "id": "2",
+            "label": "Test 2",
+            "state": "State",
+            "district": "District",
+            "email_id":  "email@example.com",
+            "fee_type": "Free"
+        },
+        {
+            "id": "3",
+            "label": "Test 3",
+            "state": "State",
+            "district": "District",
+            "email_id":  "email@example.com",
+            "min_age": "18"
+        },
+        {
+            "id": "4",
+            "label": "Test 4",
+            "state": "State",
+            "district": "District",
+            "email_id":  "email@example.com",
+            "vaccine": "COVISHIELD"
+        },
+        {
+            "id": "5",
+            "label": "Test 5",
+            "state": "State",
+            "district": "District",
+            "email_id":  "email@example.com",
+            "dose_number": 2
+        },
+        {
+            "id": "6",
+            "label": "Test 6",
+            "state": "State",
+            "district": "District",
+            "email_id":  "email@example.com",
+            "pincodes": [
+                "1234",
+                "5678"
+            ]
+        }
+    ]
+}

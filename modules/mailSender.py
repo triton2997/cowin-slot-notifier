@@ -22,7 +22,7 @@ def sendEmail(receiver, subject, mailBody):
 
     #Load mail addresses and password
     cur_path = cur_path = os.path.dirname(__file__)
-    new_filename = os.path.join(cur_path, '..', 'files', CREDENTIALS_FILENAME)
+    new_filename = os.path.normpath(os.path.join(cur_path, '..', 'files', CREDENTIALS_FILENAME))
 
     with open(new_filename) as f:
         credentials = json.load(f)
