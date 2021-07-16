@@ -33,27 +33,12 @@ CONFIG_FILENAME = 'config.json'
 # Interval for checking
 SLEEP_TIME = 60
 
-# If slots for a particular label are found, add it to a done list
-done = set()
-
-# Reset the done list at a set time everyday
-# Currently set to 2:30 AM UTC (8 AM IST)
-RESET_TIME = datetime.combine(datetime.utcnow().date(), time(2,30,0), tzinfo=timezone.utc)
-
 while True:
-    # Reset done list
-    if datetime.now(timezone.utc) > RESET_TIME:
-        # done = set()
-        RESET_TIME += timedelta(days = 1)
-
     print("Check at {}".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
 
     props = getConfigProperties(CONFIG_FILENAME)
 
     for prop in props:
-        # if prop["id"] in done:
-        #     continue
-
         slots, count = findAvailability(prop)
 
         if count == -1:
@@ -67,7 +52,6 @@ while True:
                 mailBody = generateMailBody(slots, prop["dose_number"])
                 subject = "Slots available for label - {}!".format(prop["label"])
                 sendEmail(prop["email_id"], subject, mailBody)
-                done.add(prop["id"])
             
         print("{} slots found".format(count))
     
