@@ -15,7 +15,7 @@ def getConfigProperties(filename):
     prop_dicts = []
 
     cur_path = cur_path = os.path.dirname(__file__)
-    new_filename = os.path.join(cur_path, '..', 'files', filename)
+    new_filename = os.path.normpath(os.path.join(cur_path, '..', 'files', filename))
 
     with open(new_filename) as f:
         data = json.load(f)
