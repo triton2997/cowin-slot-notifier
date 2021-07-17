@@ -21,7 +21,7 @@ Description:
 '''
 
 from time import sleep
-from datetime import datetime, time, timezone, timedelta
+from datetime import datetime, time
 
 from modules.cowinSlotsFinder import findAvailability
 from modules.mailBodyGenerator import generateMailBody
@@ -30,8 +30,8 @@ from modules.configPropertiesReader import getConfigProperties
 
 CONFIG_FILENAME = 'config.json'
 
-# Interval for checking
-SLEEP_TIME = 60
+# Interval to ensure number of API calls does not exceed 100 in 5 minutess
+SLEEP_TIME = 15
 
 while True:
     print("Check at {}".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
@@ -54,7 +54,5 @@ while True:
                 sendEmail(prop["email_id"], subject, mailBody)
             
         print("{} slots found".format(count))
-    
-    print("Going into wait")
 
-    sleep(SLEEP_TIME)
+        sleep(SLEEP_TIME)
