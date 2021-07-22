@@ -10,6 +10,6 @@ params = {'label': 'Vignesh 1st dose',
         'dose_number': 1, 
         'pincodes': {400092, 400067}}
 
-slots, count = findAvailability(params)
+slots, response_code, error = findAvailability(params)
 
-print(slots, count)
+print(slots, response_code, error)

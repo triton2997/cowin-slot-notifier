@@ -39,7 +39,8 @@ while True:
     props = getConfigProperties(CONFIG_FILENAME)
 
     for prop in props:
-        slots, count = findAvailability(prop)
+        slots, response_code, error = findAvailability(prop)
+        count = len(slots)
 
         if count == -1:
             subject = "Invalid state/district configured for label - {}".format(prop["label"])
