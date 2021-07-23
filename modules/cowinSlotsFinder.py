@@ -16,18 +16,15 @@ header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
 }
 
-# Get district ID
-def getDistrictID(state_name, district_name):
-    """Returns district_ID using given state_name and district_name"""
-
-    # get list of states
-    states_request_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
+def safeRequest(url):
+    response = None
     response_code = 0
     error = None
+
     try:
-        result = requests.get(states_request_URL, headers = header)
-        response_code = result.status_code
-        result.raise_for_status()
+        response = requests.get(url, headers = header)
+        response_code = response.status_code
+        response.raise_for_status()
     except requests.exceptions.Timeout as to:
         print("Request timed out")
         error = to
@@ -40,6 +37,17 @@ def getDistrictID(state_name, district_name):
     except requests.exceptions.RequestException as e:
         print("Fatal error:", e)
         error = e
+    
+    return response, response_code, error
+
+# Get district ID
+def getDistrictID(state_name, district_name):
+    """Returns district_ID using given state_name and district_name"""
+
+    # get list of states
+    states_request_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
+
+    result, response_code, error = safeRequest(states_request_URL)
     
     if response_code != requests.codes.ok:
         return 0, response_code, error
@@ -58,33 +66,18 @@ def getDistrictID(state_name, district_name):
 
     # get list of districts by state ID
     districts_request_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/{}".format(state_id)
-    response_code = 0
-    try:
-        result = requests.get(districts_request_URL, headers = header)
-        response_code = result.status_code
-        result.raise_for_status()
-    except requests.exceptions.Timeout as to:
-        print("Request timed out")
-        error = to
-    except requests.exceptions.ConnectionError as ce:
-        print("Connection error")
-        error = ce
-    except requests.exceptions.HTTPError as http:
-        print("Http error:", http)
-        error = http
-    except requests.exceptions.RequestException as e:
-        print("Fatal error:", e)
-        error = e
+
+    result, response_code, error = safeRequest(districts_request_URL)
     
     if response_code != requests.codes.ok:
         return 0, response_code, error
-
+    
     response_json = result.json()
 
     # filter for given district
     for district in response_json["districts"]:
         if district["district_name"] == district_name:
-            return district["district_id"], response_code, None
+            return district["district_id"], 200, None
     
     return -1, response_code, error
 
@@ -94,27 +87,11 @@ def findAvailabilityByDate(prop, district_id, date):
 
     request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}".format(district_id, date)
     slots = []
-    response_code = 0
-    error = None
-    try:
-        result = requests.get(request_url, headers = header)
-        response_code = result.status_code
-        result.raise_for_status()
-    except requests.exceptions.Timeout as to:
-        print("Request timed out")
-        error = to
-    except requests.exceptions.ConnectionError as ce:
-        print("Connection error")
-        error = ce
-    except requests.exceptions.HTTPError as http:
-        print("Http error:", http)
-        error = http
-    except requests.exceptions.RequestException as e:
-        print("Fatal error:", e)
-        error = e
+    
+    result, response_code, error = safeRequest(request_url)
     
     if response_code != requests.codes.ok:
-        return None, response_code, error
+        return 0, response_code, error
     
     response_json = result.json()
     data = response_json["sessions"]
@@ -145,7 +122,7 @@ def findAvailability(prop):
 
     district_id, response_code, error = getDistrictID(prop["state"], prop["district"])
     if district_id == -1 or error:
-        return -1, response_code, error
+        return None, response_code, error
     
     today = dt.today()
     dates = [today.strftime("%d-%m-%Y"), today + timedelta(days=1)]

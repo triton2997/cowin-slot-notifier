@@ -40,9 +40,9 @@ while True:
 
     for prop in props:
         slots, response_code, error = findAvailability(prop)
-        count = len(slots)
+        count = len(slots) if slots else 0
 
-        if count == -1:
+        if error:
             subject = "Invalid state/district configured for label - {}".format(prop["label"])
             mailBody = """Invalid state/district configured. Please update the state/district
             State: {}
