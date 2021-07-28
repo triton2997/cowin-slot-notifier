@@ -16,13 +16,13 @@ header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
 }
 
-def safeRequest(url):
+def safeRequest(request_url):
     response = None
     response_code = 0
     error = None
 
     try:
-        response = requests.get(url, headers = header)
+        response = requests.get(request_url, headers = header)
         response_code = response.status_code
         response.raise_for_status()
     except requests.exceptions.Timeout as to:
@@ -122,7 +122,7 @@ def findAvailability(prop):
 
     district_id, response_code, error = getDistrictID(prop["state"], prop["district"])
     if district_id == -1 or error:
-        return None, response_code, error
+        return None, -1, error
     
     today = dt.today()
     dates = [today.strftime("%d-%m-%Y"), today + timedelta(days=1)]
