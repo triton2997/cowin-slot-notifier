@@ -24,9 +24,18 @@ def sendEmail(receiver, subject, mailBody, default=False):
     #Load mail addresses and password
     cur_path = cur_path = os.path.dirname(__file__)
     new_filename = os.path.normpath(os.path.join(cur_path, '..', 'files', CREDENTIALS_FILENAME))
+    error = None
 
-    with open(new_filename) as f:
-        credentials = json.load(f)
+    try:
+        with open(new_filename) as f:
+            credentials = json.load(f)
+    except FileNotFoundError as FNF:
+        error = FNF
+    except Exception as e:
+        error = e
+    
+    if error:
+        return 0, error
     
     SENDER_ADDRESS = credentials["username"]
     SENDER_PASS = credentials["password"]
@@ -56,7 +65,6 @@ def sendEmail(receiver, subject, mailBody, default=False):
             
             session.send_message(message)
             session.quit()
-            print('Mail Sent')
             status = 1
             error = None
             break

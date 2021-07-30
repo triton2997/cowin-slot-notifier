@@ -1,0 +1,18 @@
+{
+    "configs": [
+        {
+            "id": "2",
+            "label": "Sushma 1st dose",
+            "state": "Maharashtra",
+            "district": "Mumbai",
+            "email_id":  "vignesh2997@gmail.com",
+            "fee_type": "Free",
+            "min_age": "18",
+            "dose_number": 1,
+            "pincodes": [
+                "400067"
+            ]
+        }
+
+    ]
+}

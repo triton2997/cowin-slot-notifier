@@ -11,6 +11,7 @@ Description:
 import requests
 from datetime import date as dt
 from datetime import timedelta
+from time import sleep
 
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
@@ -20,24 +21,30 @@ def safeRequest(request_url):
     response = None
     response_code = 0
     error = None
-
-    try:
-        response = requests.get(request_url, headers = header)
-        response_code = response.status_code
-        response.raise_for_status()
-    except requests.exceptions.Timeout as to:
-        print("Request timed out")
-        error = to
-    except requests.exceptions.ConnectionError as ce:
-        print("Connection error")
-        error = ce
-    except requests.exceptions.HTTPError as http:
-        print("Http error:", http)
-        error = http
-    except requests.exceptions.RequestException as e:
-        print("Fatal error:", e)
-        error = e
-    
+    MAX_ERROR_LIMIT = 5
+    ERROR_RECOVERY_TIME = 60
+    count = 0
+    while count < MAX_ERROR_LIMIT:
+        try:
+            response = requests.get(request_url, headers = header)
+            response_code = response.status_code
+            response.raise_for_status()
+            break
+        except requests.exceptions.Timeout as to:
+            print("Request timed out")
+            error = to
+        except requests.exceptions.ConnectionError as ce:
+            print("Connection error")
+            error = ce
+        except requests.exceptions.HTTPError as http:
+            print("Http error:", http)
+            error = http
+        except requests.exceptions.RequestException as e:
+            print("Fatal error:", e)
+            error = e
+        count += 1
+        sleep(ERROR_RECOVERY_TIME)
+        
     return response, response_code, error
 
 # Get district ID
@@ -82,7 +89,7 @@ def getDistrictID(state_name, district_name):
     return -1, response_code, error
 
 # Find Availability by date
-def findAvailabilityByDate(prop, district_id, date):
+def findAvailabilityByDate(param, district_id, date):
     """Returns slots filtered by parameters for the given district on a given date"""
 
     request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}".format(district_id, date)
@@ -98,18 +105,19 @@ def findAvailabilityByDate(prop, district_id, date):
     count = 0
     for item in data:
         if (item["available_capacity"] > 0 
-                and (prop["fee_type"] == "Any" or item["fee_type"] == prop["fee_type"]) 
-                and item["min_age_limit"] == prop["min_age"] 
-                and (prop["vaccine"] == "Any" or item["vaccine"] == prop["vaccine"]) 
-                and (len(prop["pincodes"]) == 0 or item["pincode"] in prop["pincodes"]) 
-                and (prop["dose_number"] == 0 or item["available_capacity_dose{}".format(prop["dose_number"])] > 0)):
+                and (param["fee_type"] == "Any" or item["fee_type"] == param["fee_type"])
+                and item["min_age_limit"] == param["min_age"] 
+                and (param["vaccine"] == "Any" or item["vaccine"] == param["vaccine"]) 
+                and (len(param["pincodes"]) == 0 or item["pincode"] in param["pincodes"]) 
+                and (param["dose_number"] == 0 or item["available_capacity_dose{}".format(param["dose_number"])] > 0)):
             count += 1
             slot = [count, item["name"], item["address"], item["pincode"], item["available_capacity"]]
-            if prop["dose_number"] in {0,1}:
+            if param["dose_number"] in {0,1}:
                 slot.append(item["available_capacity_dose1"])
             
-            if prop["dose_number"] in {0,2}:
+            if param["dose_number"] in {0,2}:
                 slot.append(item["available_capacity_dose2"])
+            slot.append(item["fee"])
             slot.append(item["date"])
             slot.append("{} - {}".format(item["from"], item["to"]))
             slots.append(slot)
@@ -117,10 +125,10 @@ def findAvailabilityByDate(prop, district_id, date):
     return slots, response_code, None
 
 # Find Availability
-def findAvailability(prop):
+def findAvailability(param):
     """Returns slots for current date and next date"""
 
-    district_id, response_code, error = getDistrictID(prop["state"], prop["district"])
+    district_id, response_code, error = getDistrictID(param["state"], param["district"])
     if district_id == -1 or error:
         return None, -1, error
     
@@ -129,7 +137,7 @@ def findAvailability(prop):
     slots = []
 
     for date in dates:
-        slots_by_date, response_code, error = findAvailabilityByDate(prop, district_id, date)
+        slots_by_date, response_code, error = findAvailabilityByDate(param, district_id, date)
         if not error:
             slots += slots_by_date
 

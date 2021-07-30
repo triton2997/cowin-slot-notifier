@@ -49,6 +49,7 @@ def generateMailBody(slots, doseNumber):
         mailBody += "<th> Dose 2 </th>"
     
     mailBody += """
+        <th> Fee </th>
         <th> Date </th>
         <th> Timing </th></tr>
     """
@@ -63,12 +64,14 @@ def generateMailBody(slots, doseNumber):
         if doseNumber == 0:
             slot += "<td> {} </td>".format(item[5])
             slot += "<td> {} </td>".format(item[6])
-            slot += "<td> {} </td>".format(item[7])
+            slot += "<td> {} </td>".format(item[7] if item[7] > 0 else "Free")
             slot += "<td> {} </td>".format(item[8])
+            slot += "<td> {} </td>".format(item[9])
         else:
             slot += "<td> {} </td>".format(item[5])
-            slot += "<td> {} </td>".format(item[6])
+            slot += "<td> {} </td>".format(item[6] if item[6] > 0 else "Free")
             slot += "<td> {} </td>".format(item[7])
+            slot += "<td> {} </td>".format(item[8])
         
         slot += "</tr>"
         mailBody += slot
