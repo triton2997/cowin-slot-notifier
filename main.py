@@ -28,7 +28,7 @@ from requests.exceptions import Timeout, ConnectionError, HTTPError, RequestExce
 from modules.cowinSlotsFinder import findAvailability
 from modules.mailBodyGenerator import generateMailBody
 from modules.mailSender import sendEmail
-from modules.configPropertiesReader import getParams
+from modules.paramsReader import getParams
 
 CONFIG_FILENAME = 'params.json'
 

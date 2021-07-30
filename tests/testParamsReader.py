@@ -1,4 +1,4 @@
-from modules.configPropertiesReader import getConfigProperties
+from modules.paramsReader import getConfigProperties
 
 CONFIG_FILENAME = 'test_config.json'
 
