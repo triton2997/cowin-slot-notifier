@@ -1,6 +1,6 @@
-from modules.paramsReader import getConfigProperties
+from modules.paramsReader import getParams
 
-CONFIG_FILENAME = 'test_config.json'
+CONFIG_FILENAME = 'test_params.json'
 
 test_output = \
 [
@@ -36,26 +36,30 @@ test_output = \
     }
 ]
 
-props = getConfigProperties(CONFIG_FILENAME)
+props, error = getParams(CONFIG_FILENAME)
 
-fail = {}
-flag = True
-
-for idx, dict_op in enumerate(test_output):
-    prop_dict = props[idx]
-    fail_dict = {}
-    for key in dict_op:
-        if prop_dict[key] != dict_op[key]:
-            fail_dict[key] = [dict_op[key], prop_dict[key]]
-
-    if len(fail_dict) > 0:
-        flag = False
-        fail[dict_op["label"]] = fail_dict
-
-if not flag:
-    print("Test failed")
-    print(fail)
+if error:
+    print("Error occurred:", error)
 
 else:
-    print("Test passed")
+    fail = {}
+    flag = True
+
+    for idx, dict_op in enumerate(test_output):
+        prop_dict = props[idx]
+        fail_dict = {}
+        for key in dict_op:
+            if prop_dict[key] != dict_op[key]:
+                fail_dict[key] = [dict_op[key], prop_dict[key]]
+
+        if len(fail_dict) > 0:
+            flag = False
+            fail[dict_op["label"]] = fail_dict
+
+    if not flag:
+        print("Test failed")
+        print(fail)
+
+    else:
+        print("Test passed")
 
