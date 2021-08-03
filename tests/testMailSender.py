@@ -44,4 +44,13 @@ mailBody = """
 """
 subject = "Slots available for label - Test!"
 
-sendEmail(receiver, subject, mailBody)
+status, error = sendEmail(receiver, subject, mailBody)
+
+print("Status:", status)
+print("Error:", error)
+print("Error class:", error.__class__)
+
+if status == 1 and not error:
+    print("Test passed")
+else:
+    print("Test failed")

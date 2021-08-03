@@ -1,2 +1,8 @@
 [TYPECHECK]
-generated-members=requests.codes.ok
+generated-members=requests.codes.*,codes.*
+
+[FORMAT]
+good-names=f
+
+[MESSAGES CONTROL]
+disable=broad-except

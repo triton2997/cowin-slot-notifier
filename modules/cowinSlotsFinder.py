@@ -45,17 +45,17 @@ def safeRequest(request_url):
             response.raise_for_status()
             break
         except requests.exceptions.Timeout as time_out:
-            print("Request timed out")
             error = time_out
         except requests.exceptions.ConnectionError as conn_error:
-            print("Connection error")
             error = conn_error
         except requests.exceptions.HTTPError as http:
-            print("Http error:", http)
             error = http
+            response_code = http.response.status_code
+            if response_code == 401:
+                break
         except requests.exceptions.RequestException as exc:
-            print("Fatal error:", exc)
             error = exc
+            break
         count += 1
         sleep(ERROR_RECOVERY_TIME)
 
@@ -167,8 +167,10 @@ def findAvailability(param):
     '''
 
     district_id, response_code, error = getDistrictID(param["state"], param["district"])
-    if district_id == -1 or error:
+    if district_id == -1:
         return None, -1, error
+    elif error:
+        return None, response_code, error
 
     today = dt.today()
     dates = [today.strftime("%d-%m-%Y"), today + timedelta(days=1)]
