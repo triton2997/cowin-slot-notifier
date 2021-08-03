@@ -14,36 +14,48 @@ import requests
 
 
 
-header = {
+HEADER = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
                     (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
 }
 
+MAX_ERROR_LIMIT = 5
+ERROR_RECOVERY_TIME = 60
+STATES_REQUEST_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
+DISTRICTS_REQUEST_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/{}"
+
 def safeRequest(request_url):
+    '''
+    Inputs: request_url(str)
+    Description:
+        Performs a "safe" request with given request_url
+        Handles exceptions, and performs MAX_ERROR_LIMIT retries
+        returns the final exception if request fails all trials fail
+    Return:
+        response(Response object), response_code(int), error(Exception object)
+    '''
     response = None
     response_code = 0
     error = None
-    MAX_ERROR_LIMIT = 5
-    ERROR_RECOVERY_TIME = 60
     count = 0
     while count < MAX_ERROR_LIMIT:
         try:
-            response = requests.get(request_url, headers=header)
+            response = requests.get(request_url, headers=HEADER)
             response_code = response.status_code
             response.raise_for_status()
             break
-        except requests.exceptions.Timeout as to:
+        except requests.exceptions.Timeout as time_out:
             print("Request timed out")
-            error = to
-        except requests.exceptions.ConnectionError as ce:
+            error = time_out
+        except requests.exceptions.ConnectionError as conn_error:
             print("Connection error")
-            error = ce
+            error = conn_error
         except requests.exceptions.HTTPError as http:
             print("Http error:", http)
             error = http
-        except requests.exceptions.RequestException as e:
-            print("Fatal error:", e)
-            error = e
+        except requests.exceptions.RequestException as exc:
+            print("Fatal error:", exc)
+            error = exc
         count += 1
         sleep(ERROR_RECOVERY_TIME)
 
@@ -51,11 +63,16 @@ def safeRequest(request_url):
 
 # Get district ID
 def getDistrictID(state_name, district_name):
-    """Returns district_ID using given state_name and district_name"""
-
+    '''
+    Inputs: state_name(str), district_name
+    Description:
+        Returns district_ID using given state_name and district_name
+        Returns error if request fails
+        Returns -1 for district_id if state/district is incorrect
+    Return:
+        district_id(int), response_code(int), error(Exception object)
+    '''
     # get list of states
-    STATES_REQUEST_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/states"
-
     result, response_code, error = safeRequest(STATES_REQUEST_URL)
 
     if response_code != requests.codes.ok:
@@ -74,10 +91,7 @@ def getDistrictID(state_name, district_name):
         return -1, response_code, error
 
     # get list of districts by state ID
-    DISTRICTS_REQUEST_URL = "https://cdn-api.co-vin.in/api/v2/admin/location/districts/{}"\
-                            .format(state_id)
-
-    result, response_code, error = safeRequest(DISTRICTS_REQUEST_URL)
+    result, response_code, error = safeRequest(DISTRICTS_REQUEST_URL.format(state_id))
 
     if response_code != requests.codes.ok:
         return 0, response_code, error
@@ -93,10 +107,18 @@ def getDistrictID(state_name, district_name):
 
 # Find Availability by date
 def findAvailabilityByDate(param, district_id, date):
-    """Returns slots filtered by parameters for the given district on a given date"""
+    '''
+    Inputs: param(dictionary object), district_id(int), date(str)
+    Description:
+        Makes a request to CoWIN API to get slots for given district_id on given date
+        Filters the results obtained in the Response object with given parameters
+        Returns the filtered results in a List[List[obj]] format
+    Return:
+        slots(List[List[obj]]), response_code(int), error(Exception object)
+    '''
 
-    request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/\
-                  public/findByDistrict?district_id={}&date={}".format(district_id, date)
+    request_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={}&date={}"\
+                  .format(district_id, date)
     slots = []
 
     result, response_code, error = safeRequest(request_url)
@@ -134,7 +156,15 @@ def findAvailabilityByDate(param, district_id, date):
 
 # Find Availability
 def findAvailability(param):
-    """Returns slots for current date and next date"""
+    '''
+    Inputs: param(dictionary object)
+    Description:
+        Calls findAvailabilitybyDate for current date and next date
+        In case of error in either request, returns error
+        If both requests succeed, returns concatenated results of both requests
+    Return:
+        slots(List[List[obj]]), response_code(int), error(Exception object)
+    '''
 
     district_id, response_code, error = getDistrictID(param["state"], param["district"])
     if district_id == -1 or error:
