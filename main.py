@@ -22,8 +22,8 @@ Description:
 
 import sys
 from time import sleep
-from datetime import datetime, time
-from requests.exceptions import Timeout, ConnectionError, HTTPError, RequestException
+from datetime import datetime
+from requests import exceptions #Timeout, ConnectionError, HTTPError, RequestException
 
 from modules.cowinSlotsFinder import findAvailability
 from modules.mailBodyGenerator import generateMailBody
@@ -42,17 +42,23 @@ while True:
 
     params, error = getParams(CONFIG_FILENAME)
     if error.__class__ == FileNotFoundError:
-        status, error = sendEmail("", "FATAL ERROR: Params file not found", "Params file named {} not found".format(CONFIG_FILENAME), default=True)
+        status, error = sendEmail("", "FATAL ERROR: Params file not found",
+                                  "Params file named {} not found".format(CONFIG_FILENAME),
+                                  default=True)
         print("No such file found:", CONFIG_FILENAME)
         sys.exit()
-    
+
     elif error.__class__ == Exception:
-        status, error = sendEmail("", "FATAL ERROR: An unknown fatal error occurred", "An unkown fatal error occurred\nDetails: {}".format(error), default=True)
+        status, error = sendEmail("", "FATAL ERROR: An unknown fatal error occurred",
+                                  "An unkown fatal error occurred\nDetails: {}".format(error),
+                                  default=True)
         print("A fatal error occurred:", error)
         sys.exit()
-    
+
     elif error:
-        status, error = sendEmail("", "FATAL ERROR: An unknown fatal error occurred", "An unkown fatal error occurred\nDetails: {}".format(error), default=True)
+        status, error = sendEmail("", "FATAL ERROR: An unknown fatal error occurred",
+                                  "An unkown fatal error occurred\nDetails: {}".format(error),
+                                  default=True)
         print("A fatal error occurred:", error)
         sys.exit()
 
@@ -61,19 +67,21 @@ while True:
         count = len(slots) if slots else 0
 
         if error:
-            if error.__class__ == Timeout:
+            if error.__class__ == exceptions.Timeout:
                 print("Request timed out")
-            elif error.__class__ == ConnectionError:
+            elif error.__class__ == exceptions.ConnectionError:
                 print("An error occurred while establishing the connection")
-            elif error.__class__ == HTTPError:
-                print("An HTTPError occurred:",error)
-            elif error.__class__ == RequestException:
+            elif error.__class__ == exceptions.HTTPError:
+                print("An HTTPError occurred:", error)
+            elif error.__class__ == exceptions.RequestException:
                 print("A fatal error occurred")
 
-            status, error = sendEmail("", "ERROR: An error occurred", "A recoverable error occurred: {}".format(error), default=True)
+            status, error = sendEmail("", "ERROR: An error occurred",
+                                      "A recoverable error occurred: {}".format(error),
+                                      default=True)
             print("Error recovery...")
             sleep(ERROR_RECOVERY_TIME)
-        
+
         elif response_code == -1:
             subject = "Invalid state/district configured for label - {}".format(param["label"])
             mailBody = """Invalid state/district configured. Please update the state/district
@@ -89,7 +97,7 @@ while True:
                 print("Fatal error occurred while sending email for label", param["label"], error)
             print("Mail sent")
 
-            
+
         print("{} slots found".format(count))
 
         sleep(SLEEP_TIME)

@@ -9,7 +9,6 @@ Description:
 '''
 
 def generateMailBody(slots, doseNumber):
-
     mailBody = """
     <html>
         <head>
@@ -47,13 +46,13 @@ def generateMailBody(slots, doseNumber):
         mailBody += "<th> Dose 1 </th>"
     else:
         mailBody += "<th> Dose 2 </th>"
-    
+
     mailBody += """
         <th> Fee </th>
         <th> Date </th>
         <th> Timing </th></tr>
     """
-    
+
     for item in slots:
 
         slot = "<tr><td>{}</td>".format(item[0])
@@ -72,10 +71,10 @@ def generateMailBody(slots, doseNumber):
             slot += "<td> {} </td>".format(item[6] if item[6] > 0 else "Free")
             slot += "<td> {} </td>".format(item[7])
             slot += "<td> {} </td>".format(item[8])
-        
+
         slot += "</tr>"
         mailBody += slot
-    
+
     mailBody += "</table></body></html>"
 
     return mailBody
