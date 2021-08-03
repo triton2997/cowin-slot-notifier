@@ -21,7 +21,7 @@ from email.message import EmailMessage
 
 CREDENTIALS_FILENAME = "credentials.json"
 MAIL_PROVIDER = "smtp.gmail.com"
-PORT_NUMBER = 464
+PORT_NUMBER = 465
 MAX_ERROR_LIMIT = 5
 
 def sendEmail(receiver, subject, mailBody, default=False):
