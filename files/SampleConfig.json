@@ -1,12 +1,12 @@
 {
-    "configs": [
+    "params": [
         {
             "id": "A unique identifier for this configuration - needs to be unique from other ids in this file - mandatory",
             "label": "A short label description for future reference - mandatory",
             "state": "state name (refer to readme for spelling) - mandatory",
             "district": "district name (refer to readme for spelling) - mandatory",
             "email_id":  "examplemail@gmail.com - mandatory",
-            "fee_type": "Free/Paid/Any",
+            "fee_type": "Free/Paid/Remove if any",
             "min_age": "18/45",
             "vaccine": "COVISHIELD/COVAXIN",
             "dose_number": "0(Any)/1/2",
