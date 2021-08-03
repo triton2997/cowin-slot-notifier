@@ -104,7 +104,7 @@ def sendEmail(receiver, subject, mailBody, default=False):
             status, error = 0, smtp_exc
             print("An SMTP exception occurred", smtp_exc)
             error_count += 1
-        
+
         except TimeoutError as time_out:
             status, error = 0, time_out
             print("The connection operation timed out. Details:", time_out)

@@ -9,6 +9,14 @@ Description:
 '''
 
 def generateMailBody(slots, doseNumber):
+    '''
+    Inputs: slots(List[List[obj]]), doseNumber(int)
+    Description:
+        Generates HTML mail body using given slots object
+        Returns HTML as a string
+    Return:
+        status(int), error(Exception object)
+    '''
     mailBody = """
     <html>
         <head>

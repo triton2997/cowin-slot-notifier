@@ -120,7 +120,8 @@ while True:
             subject = "Slots available for label - {}!".format(param["label"])
             status, mail_error = sendEmail(param["email_id"], subject, mailBody)
             if mail_error:
-                print("Fatal error occurred while sending email for label", param["label"], mail_error)
+                print("Fatal error occurred while sending email for label",
+                      param["label"], mail_error)
             else:
                 print("Mail sent")
 
