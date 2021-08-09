@@ -147,7 +147,7 @@ def findAvailabilityByDate(param, district_id, date):
 
             if param["dose_number"] in {0, 2}:
                 slot.append(item["available_capacity_dose2"])
-            slot.append(item["fee"])
+            slot.append(int(item["fee"]))
             slot.append(item["date"])
             slot.append("{} - {}".format(item["from"], item["to"]))
             slots.append(slot)
