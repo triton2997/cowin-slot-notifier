@@ -11,6 +11,10 @@ Description:
 import os
 import json
 
+import logging
+
+logger = logging.getLogger("main.params_reader")
+
 def getParams(filename):
     '''
     Inputs: filename(str)
@@ -31,8 +35,10 @@ def getParams(filename):
             data = json.load(f)
     except FileNotFoundError as fnf:
         error = fnf
+        logger.exception("FATAL ERROR: Params file %s not found. Details: %s", filename, fnf)
     except Exception as exc:
         error = exc
+        logger.exception("FATAL ERROR: An unknown error occurred: %s", exc)
 
     if error:
         return None, error
