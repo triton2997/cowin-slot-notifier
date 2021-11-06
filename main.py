@@ -38,10 +38,12 @@ from modules.config_reader import Configs
 
 CONFIG_FILENAME = "configs.json"
 
-Configs.load_configs(CONFIG_FILENAME)
-# Configs.print_configs()
+status, error = Configs.load_configs(CONFIG_FILENAME)
+if not status:
+    print(error)
+    sys.exit()
 
-CONFIG_FILENAME = 'params.json'
+# Configs.print_configs()
 
 # configure logging
 NUMERIC_LEVEL = getattr(logging, Configs.FILE_LOG_LEVEL.upper(), None)
@@ -111,9 +113,11 @@ while True:
 
         if error:
             if error.__class__ == exceptions.Timeout:
-                pass
+                logger.debug("Exiting as connection timed out repeatedly")
+                sys.exit()
             elif error.__class__ == exceptions.ConnectionError:
-                pass
+                logger.debug("Exiting due to repeated connection errors")
+                sys.exit()
             elif error.__class__ == exceptions.HTTPError and response_code == codes.unauthorized:
                     # print("Invalid URL configured.Stopping...")
                     # status, mail_error = sendEmail("", "ERROR: Invalid URL configured",

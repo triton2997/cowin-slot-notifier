@@ -40,7 +40,7 @@ class Configs:
                 configs = json.load(f)
         except FileNotFoundError as fnf:
             error = fnf
-            logger.exception("FATAL ERROR: Credentials file %s not found. Details: %s",
+            logger.exception("FATAL ERROR: Configs file %s not found. Details: %s",
                             config_filename, fnf)
         except Exception as exc:
             error = exc
@@ -74,14 +74,14 @@ class Configs:
                 credentials = json.load(f)
         except FileNotFoundError as fnf:
             error = fnf
-            logger.exception("FATAL ERROR: Credentials file %s not found. Details: %s",
+            logger.debug("FATAL ERROR: Credentials file %s not found. Details: %s",
                              cls.CREDENTIALS_FILENAME, fnf)
         except Exception as exc:
             error = exc
             logger.exception("FATAL ERROR: An unknown error occurred: %s", exc)
 
-            if error:
-                return 0, error
+        if error:
+            return 0, error
 
         cls.EMAIL_ADDRESS = credentials["username"]
         cls.PASSWORD = credentials["password"]
