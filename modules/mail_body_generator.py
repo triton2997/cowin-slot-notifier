@@ -8,7 +8,7 @@ Description:
 ----------------------------------------------
 '''
 
-def generateMailBody(slots, doseNumber):
+def generate_mail_body(slots, dose_number):
     '''
     Inputs: slots(List[List[obj]]), doseNumber(int)
     Description:
@@ -17,7 +17,7 @@ def generateMailBody(slots, doseNumber):
     Return:
         status(int), error(Exception object)
     '''
-    mailBody = """
+    mail_body = """
     <html>
         <head>
             <style>
@@ -47,15 +47,15 @@ def generateMailBody(slots, doseNumber):
                 <th> Total Capacity </th>
     """
 
-    if doseNumber == 0:
-        mailBody += "<th> Dose 1 </th>"
-        mailBody += "<th> Dose 2 </th>"
-    elif doseNumber == 1:
-        mailBody += "<th> Dose 1 </th>"
+    if dose_number == 0:
+        mail_body += "<th> Dose 1 </th>"
+        mail_body += "<th> Dose 2 </th>"
+    elif dose_number == 1:
+        mail_body += "<th> Dose 1 </th>"
     else:
-        mailBody += "<th> Dose 2 </th>"
+        mail_body += "<th> Dose 2 </th>"
 
-    mailBody += """
+    mail_body += """
         <th> Fee </th>
         <th> Date </th>
         <th> Timing </th></tr>
@@ -63,26 +63,26 @@ def generateMailBody(slots, doseNumber):
 
     for item in slots:
 
-        slot = "<tr><td>{}</td>".format(item[0])
-        slot += "<td>{}</td>".format(item[1])
-        slot += "<td>{}</td>".format(item[2])
-        slot += "<td>{}</td>".format(item[3])
-        slot += "<td>{}</td>".format(item[4])
-        if doseNumber == 0:
-            slot += "<td> {} </td>".format(item[5])
-            slot += "<td> {} </td>".format(item[6])
-            slot += "<td> {} </td>".format(item[7] if item[7] > 0 else "Free")
-            slot += "<td> {} </td>".format(item[8])
-            slot += "<td> {} </td>".format(item[9])
+        slot = f"<tr><td>{item[0]}</td>"
+        slot += f"<td>{item[1]}</td>"
+        slot += f"<td>{item[2]}</td>"
+        slot += f"<td>{item[3]}</td>"
+        slot += f"<td>{item[4]}</td>"
+        if dose_number == 0:
+            slot += f"<td> {item[5]} </td>"
+            slot += f"<td> {item[6]} </td>"
+            slot += f"<td> {item[7] if item[7] > 0 else 'Free'} </td>"
+            slot += f"<td> {item[8]} </td>"
+            slot += f"<td> {item[9]} </td>"
         else:
-            slot += "<td> {} </td>".format(item[5])
-            slot += "<td> {} </td>".format(item[6] if item[6] > 0 else "Free")
-            slot += "<td> {} </td>".format(item[7])
-            slot += "<td> {} </td>".format(item[8])
+            slot += f"<td> {item[5]} </td>"
+            slot += f"<td> {item[6] if item[6] > 0 else 'Free'} </td>"
+            slot += f"<td> {item[7]} </td>"
+            slot += f"<td> {item[8]} </td>"
 
         slot += "</tr>"
-        mailBody += slot
+        mail_body += slot
 
-    mailBody += "</table></body></html>"
+    mail_body += "</table></body></html>"
 
-    return mailBody
+    return mail_body

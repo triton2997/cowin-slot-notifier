@@ -30,10 +30,10 @@ from requests import exceptions, codes
 
 
 
-from modules.cowinSlotsFinder import findAvailability
-from modules.mailBodyGenerator import generateMailBody
-from modules.mailSender import sendEmail
-from modules.paramsReader import getParams
+from modules.cowin_slots_finder import find_availability
+from modules.mail_body_generator import generate_mail_body
+from modules.mail_sender import send_email
+from modules.params_reader import get_params
 from modules.config_reader import Configs
 
 CONFIG_FILENAME = "configs.json"
@@ -46,13 +46,13 @@ CONFIG_FILENAME = 'params.json'
 # configure logging
 NUMERIC_LEVEL = getattr(logging, Configs.FILE_LOG_LEVEL.upper(), None)
 if not isinstance(NUMERIC_LEVEL, int):
-    raise ValueError('Invalid log level: {}'.format(Configs.FILE_LOG_LEVEL))
+    raise ValueError(f'Invalid log level: {Configs.FILE_LOG_LEVEL}')
 
 SUBJECT = "ERROR: An error occurred"
 logger = logging.getLogger("main")
 logger.setLevel(NUMERIC_LEVEL)
 
-file_handler = logging.FileHandler("logs/{}".format(Configs.LOG_FILE_NAME))
+file_handler = logging.FileHandler(f"logs/{Configs.LOG_FILE_NAME}")
 file_handler.setLevel(NUMERIC_LEVEL)
 
 smtp_handler = logging.handlers.SMTPHandler(mailhost=Configs.MAIL_HOST,
@@ -73,9 +73,9 @@ logger.addHandler(file_handler)
 logger.addHandler(smtp_handler)
 
 while True:
-    print("Check at {}".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"Check at {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
 
-    params, error = getParams(Configs.PARAMS_FILENAME)
+    params, error = get_params(Configs.PARAMS_FILENAME)
     if error.__class__ == FileNotFoundError:
         # status, mail_error = sendEmail("", "FATAL ERROR: Params file not found",
         #                           "Params file named {} not found".format(CONFIG_FILENAME),
@@ -106,7 +106,7 @@ while True:
         sys.exit()
 
     for param in params:
-        slots, response_code, error = findAvailability(param)
+        slots, response_code, error = find_availability(param)
         COUNT = len(slots) if slots else 0
 
         if error:
@@ -150,13 +150,13 @@ while True:
             """, param["state"], param["district"])
 
         elif COUNT > 0:
-            mailBody = generateMailBody(slots, param["dose_number"])
-            SUBJECT = "Slots available for label - {}!".format(param["label"])
-            status, mail_error = sendEmail(param["email_id"], SUBJECT, mailBody)
+            mailBody = generate_mail_body(slots, param["dose_number"])
+            SUBJECT = f"Slots available for label - {param['label']}!"
+            status, mail_error = send_email(param["email_id"], SUBJECT, mailBody)
             if not mail_error:
                 print("Mail sent")
 
 
-        print("{} slots found".format(COUNT))
+        print(f"{COUNT} slots found")
 
         sleep(Configs.SLEEP_TIME)

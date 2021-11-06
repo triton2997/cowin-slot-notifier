@@ -36,7 +36,7 @@ class Configs:
         error = None
 
         try:
-            with open(new_filename) as f:
+            with open(new_filename, encoding='UTF-8') as f:
                 configs = json.load(f)
         except FileNotFoundError as fnf:
             error = fnf
@@ -70,7 +70,7 @@ class Configs:
                                                     '..', 'files', cls.CREDENTIALS_FILENAME))
 
         try:
-            with open(new_filename) as f:
+            with open(new_filename, encoding='UTF-8') as f:
                 credentials = json.load(f)
         except FileNotFoundError as fnf:
             error = fnf

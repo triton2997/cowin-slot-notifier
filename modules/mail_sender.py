@@ -8,14 +8,12 @@ Description:
 ----------------------------------------------
 '''
 
-import os
 from smtplib import SMTP_SSL \
                     , SMTPException \
                     , SMTPAuthenticationError \
                     , SMTPConnectError \
                     , SMTPServerDisconnected \
                     , SMTPHeloError
-import json
 import logging
 
 from email.message import EmailMessage
@@ -23,7 +21,7 @@ from .config_reader import Configs
 
 logger = logging.getLogger("main.mail_sender")
 
-def sendEmail(receiver, subject, mailBody, default=False):
+def send_email(receiver, subject, mail_body, default=False):
     '''
     Inputs: receiver(str), subject(str), mailBody(str), default(boolean)
     Description:
@@ -40,9 +38,9 @@ def sendEmail(receiver, subject, mailBody, default=False):
     message['To'] = receiver
     message['Subject'] = subject
 
-    message.set_content(mailBody)
+    message.set_content(mail_body)
 
-    message.add_alternative(mailBody, subtype='html')
+    message.add_alternative(mail_body, subtype='html')
 
     #Create SMTP session for sending the mail
     status = 0

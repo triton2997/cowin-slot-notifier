@@ -21,7 +21,7 @@ HEADER = {
 
 logger = logging.getLogger("main.slots_finder")
 
-def safeRequest(request_url):
+def safe_request(request_url):
     '''
     Inputs: request_url(str)
     Description:
@@ -64,7 +64,7 @@ def safeRequest(request_url):
     return response, response_code, error
 
 # Get district ID
-def getDistrictID(state_name, district_name):
+def get_district_id(state_name, district_name):
     '''
     Inputs: state_name(str), district_name
     Description:
@@ -75,7 +75,7 @@ def getDistrictID(state_name, district_name):
         district_id(int), response_code(int), error(Exception object)
     '''
     # get list of states
-    result, response_code, error = safeRequest(Configs.STATES_REQUEST_URL)
+    result, response_code, error = safe_request(Configs.STATES_REQUEST_URL)
 
     if response_code != requests.codes.ok:
         return 0, response_code, error
@@ -93,8 +93,8 @@ def getDistrictID(state_name, district_name):
         return -1, response_code, error
 
     # get list of districts by state ID
-    DISTRICTS_REQUEST_URL = Configs.DISTRICTS_REQUEST_URL + "/{}"
-    result, response_code, error = safeRequest(DISTRICTS_REQUEST_URL.format(state_id))
+    districts_request_url = Configs.DISTRICTS_REQUEST_URL + "/{}"
+    result, response_code, error = safe_request(districts_request_url.format(state_id))
 
     if response_code != requests.codes.ok:
         return 0, response_code, error
@@ -109,7 +109,7 @@ def getDistrictID(state_name, district_name):
     return -1, response_code, error
 
 # Find Availability by date
-def findAvailabilityByDate(param, district_id, date):
+def find_availability_by_date(param, district_id, date):
     '''
     Inputs: param(dictionary object), district_id(int), date(str)
     Description:
@@ -120,11 +120,10 @@ def findAvailabilityByDate(param, district_id, date):
         slots(List[List[obj]]), response_code(int), error(Exception object)
     '''
 
-    request_url = Configs.REQUEST_BY_DIST_ID_URL + "district_id={}&date={}".\
-                                                    format(district_id, date)
+    request_url = Configs.REQUEST_BY_DIST_ID_URL + f"district_id={district_id}&date={date}"
     slots = []
 
-    result, response_code, error = safeRequest(request_url)
+    result, response_code, error = safe_request(request_url)
 
     if response_code != requests.codes.ok:
         return 0, response_code, error
@@ -139,7 +138,7 @@ def findAvailabilityByDate(param, district_id, date):
                 and (param["vaccine"] == "Any" or item["vaccine"] == param["vaccine"])
                 and (len(param["pincodes"]) == 0 or item["pincode"] in param["pincodes"])
                 and (param["dose_number"] == 0
-                     or item["available_capacity_dose{}".format(param["dose_number"])] > 0)):
+                     or item[f"available_capacity_dose{param['dose_number']}"] > 0)):
             count += 1
             slot = [count, item["name"]
                     , item["address"]
@@ -152,13 +151,13 @@ def findAvailabilityByDate(param, district_id, date):
                 slot.append(item["available_capacity_dose2"])
             slot.append(int(item["fee"]))
             slot.append(item["date"])
-            slot.append("{} - {}".format(item["from"], item["to"]))
+            slot.append(f"{item['from']} - {item['to']}")
             slots.append(slot)
 
     return slots, response_code, None
 
 # Find Availability
-def findAvailability(param):
+def find_availability(param):
     '''
     Inputs: param(dictionary object)
     Description:
@@ -169,7 +168,7 @@ def findAvailability(param):
         slots(List[List[obj]]), response_code(int), error(Exception object)
     '''
 
-    district_id, response_code, error = getDistrictID(param["state"], param["district"])
+    district_id, response_code, error = get_district_id(param["state"], param["district"])
     if district_id == -1:
         return None, -1, error
     if error:
@@ -180,7 +179,7 @@ def findAvailability(param):
     slots = []
 
     for date in dates:
-        slots_by_date, response_code, error = findAvailabilityByDate(param, district_id, date)
+        slots_by_date, response_code, error = find_availability_by_date(param, district_id, date)
         if not error:
             slots += slots_by_date
 

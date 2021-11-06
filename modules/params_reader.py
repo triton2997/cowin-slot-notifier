@@ -15,7 +15,7 @@ import logging
 
 logger = logging.getLogger("main.params_reader")
 
-def getParams(filename):
+def get_params(filename):
     '''
     Inputs: filename(str)
     Description:
@@ -31,7 +31,7 @@ def getParams(filename):
     new_filename = os.path.normpath(os.path.join(cur_path, '..', 'files', filename))
     error = None
     try:
-        with open(new_filename) as f:
+        with open(new_filename, encoding='UTF-8') as f:
             data = json.load(f)
     except FileNotFoundError as fnf:
         error = fnf
