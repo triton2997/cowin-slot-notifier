@@ -3,3 +3,4 @@ credentials.json
 __pycache__
 .vscode/settings.json
 files/params.json
+logs/cwn_slt_finder.log
