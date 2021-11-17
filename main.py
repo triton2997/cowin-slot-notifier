@@ -79,32 +79,11 @@ while True:
 
     params, error = get_params(Configs.PARAMS_FILENAME)
     if error.__class__ == FileNotFoundError:
-        # status, mail_error = sendEmail("", "FATAL ERROR: Params file not found",
-        #                           "Params file named {} not found".format(CONFIG_FILENAME),
-        #                           default=True)
-        # print("No such file found:", CONFIG_FILENAME)
-        # if mail_error:
-        #     print("An error occurred while sending the error email:", mail_error)
-        sys.exit()
-
-    elif error.__class__ == Exception:
-        # status, mail_error = sendEmail("", "FATAL ERROR: An unknown fatal error occurred",
-        #                           "An unkown fatal error occurred\nDetails: {}".format(error),
-        #                           default=True)
-        # print("A fatal error occurred:", error)
-        # logger.exception("A fatal error occurred: {}".format(error))
-        # if mail_error:
-        #     print("An error occurred while sending the error email:", mail_error)
+        logger.debug("Exiting due to file not found error. Check email for more details...")
         sys.exit()
 
     elif error:
-        # status, mail_error = sendEmail("", "FATAL ERROR: An unknown fatal error occurred",
-        #                           "An unkown fatal error occurred\nDetails: {}".format(error),
-        #                           default=True)
-        # print("A fatal error occurred:", error)
-        # logger.exception("A fatal error occurred: {}".format(error))
-        # if mail_error:
-        #     print("An error occurred while sending the error email:", mail_error)
+        logger.debug("Exiting due to an unknown error. Check email for more details...")
         sys.exit()
 
     for param in params:
@@ -119,30 +98,11 @@ while True:
                 logger.debug("Exiting due to repeated connection errors")
                 sys.exit()
             elif error.__class__ == exceptions.HTTPError and response_code == codes.unauthorized:
-                    # print("Invalid URL configured.Stopping...")
-                    # status, mail_error = sendEmail("", "ERROR: Invalid URL configured",
-                    #                           "An unrecoverable error occurred: {}".format(error),
-                    #                             default=True)
-                    # if mail_error:
-                    #     print("An error occurred while sending the error email:", mail_error)
                 logger.debug("Exiting due to HTTP 401 error")
                 sys.exit()
             elif error.__class__ == exceptions.RequestException:
-                # print("A fatal error occurred. Stopping...")
-                # status, mail_error = sendEmail("", "ERROR: A fatal occurred",
-                #                       """A non-recoverable fatal error occurred: {}\n
-                #                       Program has stopped""".format(error),
-                #                       default=True)
-                # if mail_error:
-                #     print("An error occurred while sending the error email:", mail_error)
                 logger.debug("Exiting due to fatal error")
                 sys.exit()
-
-            # status, mail_error = sendEmail("", "ERROR: An error occurred",
-            #                           "A recoverable error occurred: {}".format(error),
-            #                           default=True)
-            # if mail_error:
-            #     print("An error occurred while sending the error email:", mail_error)
             logging.debug("Beginning error recovery...")
             sleep(Configs.ERROR_RECOVERY_TIME)
 
