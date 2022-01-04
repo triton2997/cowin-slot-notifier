@@ -11,7 +11,11 @@ Description:
 import os
 import json
 
-def getParams(filename):
+import logging
+
+logger = logging.getLogger("main.params_reader")
+
+def get_params(filename):
     '''
     Inputs: filename(str)
     Description:
@@ -27,12 +31,14 @@ def getParams(filename):
     new_filename = os.path.normpath(os.path.join(cur_path, '..', 'files', filename))
     error = None
     try:
-        with open(new_filename) as f:
+        with open(new_filename, encoding='UTF-8') as f:
             data = json.load(f)
     except FileNotFoundError as fnf:
         error = fnf
+        logger.exception("FATAL ERROR: Params file %s not found. Details: %s", filename, fnf)
     except Exception as exc:
         error = exc
+        logger.exception("FATAL ERROR: An unknown error occurred: %s", exc)
 
     if error:
         return None, error

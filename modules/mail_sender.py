@@ -8,23 +8,20 @@ Description:
 ----------------------------------------------
 '''
 
-import os
 from smtplib import SMTP_SSL \
                     , SMTPException \
                     , SMTPAuthenticationError \
                     , SMTPConnectError \
                     , SMTPServerDisconnected \
                     , SMTPHeloError
-import json
+import logging
 
 from email.message import EmailMessage
+from .config_reader import Configs
 
-CREDENTIALS_FILENAME = "credentials.json"
-MAIL_PROVIDER = "smtp.gmail.com"
-PORT_NUMBER = 465
-MAX_ERROR_LIMIT = 5
+logger = logging.getLogger("main.mail_sender")
 
-def sendEmail(receiver, subject, mailBody, default=False):
+def send_email(receiver, subject, mail_body, default=False):
     '''
     Inputs: receiver(str), subject(str), mailBody(str), default(boolean)
     Description:
@@ -33,47 +30,27 @@ def sendEmail(receiver, subject, mailBody, default=False):
     Return:
         status(int), error(Exception object)
     '''
-    #Load mail addresses and password
-    cur_path = cur_path = os.path.dirname(__file__)
-    new_filename = os.path.normpath(os.path.join(cur_path, '..', 'files', CREDENTIALS_FILENAME))
-    error = None
-
-    try:
-        with open(new_filename) as f:
-            credentials = json.load(f)
-    except FileNotFoundError as fnf:
-        error = fnf
-    except Exception as exc:
-        error = exc
-
-    if error:
-        return 0, error
-
-    SENDER_ADDRESS = credentials["username"]
-    SENDER_PASS = credentials["password"]
-
     if default:
-        receiver = SENDER_ADDRESS
+        receiver = Configs.EMAIL_ADDRESS
 
     message = EmailMessage()
-    message['From'] = SENDER_ADDRESS
+    message['From'] = Configs.EMAIL_ADDRESS
     message['To'] = receiver
     message['Subject'] = subject
 
-    message.set_content(mailBody)
+    message.set_content(mail_body)
 
-    message.add_alternative(mailBody, subtype='html')
+    message.add_alternative(mail_body, subtype='html')
 
     #Create SMTP session for sending the mail
     status = 0
     error = None
     error_count = 0
 
-    while error_count < MAX_ERROR_LIMIT:
+    while error_count < Configs.MAX_RETRY_LIMIT:
         try:
-            session = SMTP_SSL(MAIL_PROVIDER, PORT_NUMBER)
-            session.ehlo()
-            session.login(SENDER_ADDRESS, SENDER_PASS)
+            session = SMTP_SSL(Configs.MAIL_HOST, Configs.MAIL_PORT_NUMBER)
+            session.login(Configs.EMAIL_ADDRESS, Configs.PASSWORD)
             session.send_message(message)
             session.quit()
             status = 1
@@ -82,37 +59,37 @@ def sendEmail(receiver, subject, mailBody, default=False):
 
         except SMTPConnectError as smtp_connect:
             status, error = 0, smtp_connect
-            print("An error occurred during establishment of a connection with the server")
+            logger.warning("An error occurred during establishment of a connection with the server")
             error_count += 1
 
         except SMTPAuthenticationError as smtp_auth:
             status, error = 0, smtp_auth
-            print("The username/password given is invalid")
+            logger.error("The username/password given in the credentials file is invalid")
             break
 
         except SMTPServerDisconnected as smtp_disconnect:
             status, error = 0, smtp_disconnect
-            print("The server disconnected unexpectedly")
+            logger.warning("The server disconnected unexpectedly")
             error_count += 1
 
         except SMTPHeloError as smtp_helo:
             status, error = 0, smtp_helo
-            print("The server refused the HELO message")
+            logger.warning("The server refused the HELO message")
             error_count += 1
 
         except SMTPException as smtp_exc:
             status, error = 0, smtp_exc
-            print("An SMTP exception occurred", smtp_exc)
+            logger.warning("An SMTP exception occurred: %s", smtp_exc)
             error_count += 1
 
         except TimeoutError as time_out:
             status, error = 0, time_out
-            print("The connection operation timed out. Details:", time_out)
+            logger.warning("The connection operation timed out. Details: %s", time_out)
             error_count += 1
 
         except Exception as exc:
             status, error = 0, exc
-            print("An unexpected fatal error occurred", exc)
-            error_count += 1
+            logger.exception("An unexpected fatal error occurred. Details: %s", exc)
+            break
 
     return status, error

@@ -1,0 +1,19 @@
+{
+    "main": {
+        "PARAMS_FILENAME": "params.json",
+        "SLEEP_TIME": 15,
+        "ERROR_RECOVERY_TIME": 300,
+        "MAX_RETRY_LIMIT": 5,
+        "MAIL_HOST": "smtp.gmail.com",
+        "MAIL_PORT_NUMBER": 465,
+        "CREDENTIALS_FILENAME": "credentials.json",
+        "ERROR_SLEEP_TIME": 60,
+        "STATES_REQUEST_URL": "https://cdn-api.co-vin.in/api/v2/admin/location/states",
+        "DISTRICTS_REQUEST_URL": "https://cdn-api.co-vin.in/api/v2/admin/location/districts",
+        "REQUEST_BY_DIST_ID_URL": "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?"
+    },
+    "logging": {
+        "LOG_FILE_NAME": "cwn_slt_finder.log",
+        "FILE_LOG_LEVEL": "DEBUG"
+    }
+}

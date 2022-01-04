@@ -1,17 +1,9 @@
-import os
-import json
-
 from modules.mailSender import sendEmail
+from modules.config_reader import Configs
 
-CREDENTIALS_FILENAME = "credentials.json"
+CONFIG_FILENAME = "configs.json"
 
-cur_path = cur_path = os.path.dirname(__file__)
-new_filename = os.path.join(cur_path, '..', 'files', CREDENTIALS_FILENAME)
-
-with open(new_filename) as f:
-    credentials = json.load(f)
-
-receiver = credentials["username"]
+Configs.load_configs("configs.json")
 
 mailBody = """
 <html>
@@ -44,7 +36,7 @@ mailBody = """
 """
 subject = "Slots available for label - Test!"
 
-status, error = sendEmail(receiver, subject, mailBody)
+status, error = sendEmail("", subject, mailBody, default=True)
 
 print("Status:", status)
 print("Error:", error)
